@@ -16,7 +16,7 @@ export default function HomePage() {
       >
         {/* Left parchment scroll — Quest journal */}
         <div
-          className="absolute overflow-auto"
+          className="absolute overflow-hidden"
           style={{
             top: "23%",
             left: "3.5%",

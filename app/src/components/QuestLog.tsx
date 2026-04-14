@@ -40,8 +40,8 @@ export function QuestLog({ state, onAfterClaim }: Props) {
   }
 
   return (
-    <div className="w-full text-[#1b120a]">
-      <header className="flex items-baseline justify-between mb-2">
+    <div className="w-full h-full flex flex-col text-[#1b120a]">
+      <header className="flex items-baseline justify-between mb-2 shrink-0">
         <h2
           style={{
             fontFamily: "var(--font-script), cursive",
@@ -63,7 +63,7 @@ export function QuestLog({ state, onAfterClaim }: Props) {
         </span>
       </header>
 
-      <ul className="space-y-1.5">
+      <ul className="space-y-1.5 flex-1 overflow-y-auto pr-1 quest-scroll">
         {state.quests.map((q) => (
           <li
             key={q.id}
