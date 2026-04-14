@@ -4,9 +4,9 @@ import { useMemo, useRef, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { RARITY_COLOR, type Prize } from "@/lib/state";
 
-const ITEM_WIDTH = 128;
-const ITEM_HEIGHT = 96;
-const GAP = 8;
+const ITEM_WIDTH = 110;
+const ITEM_HEIGHT = 82;
+const GAP = 6;
 const SPIN_DURATION = 6;
 
 type Props = {
@@ -58,7 +58,6 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
       setStage("spinning");
 
       await controls.set({ x: 0 });
-
       await new Promise((r) => requestAnimationFrame(() => r(null)));
 
       const viewport = viewportRef.current?.clientWidth ?? 0;
@@ -90,55 +89,86 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
   const buttonDisabled = stage !== "idle" || spins <= 0;
 
   return (
-    <div className="space-y-3">
+    <div className="w-full h-full flex flex-col gap-1.5">
       <div
         ref={viewportRef}
-        className="relative w-full overflow-hidden rounded border border-white/15 bg-white/5"
-        style={{ height: ITEM_HEIGHT + 16 }}
+        className="relative w-full flex-1 overflow-hidden rounded-sm"
+        style={{
+          minHeight: ITEM_HEIGHT + 12,
+          background: "rgba(58, 36, 16, 0.08)",
+          boxShadow: "inset 0 0 0 1px rgba(58, 36, 16, 0.3)",
+        }}
       >
-        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[2px] bg-yellow-400/80 z-10 pointer-events-none" />
+        <div
+          className="absolute inset-y-0 left-1/2 -translate-x-1/2 z-10 pointer-events-none"
+          style={{
+            width: "2px",
+            background: "#8b1e1e",
+            boxShadow: "0 0 8px rgba(139, 30, 30, 0.6)",
+          }}
+        />
         <motion.div
           animate={controls}
-          className="absolute top-2 left-0 flex"
+          className="absolute top-1.5 left-0 flex"
           style={{ gap: `${GAP}px`, willChange: "transform" }}
         >
           {strip.map((id, idx) => {
             const p = prizeById.get(id);
             if (!p) return null;
-            return (
-              <PrizeTile key={`${id}-${idx}`} prize={p} />
-            );
+            return <PrizeTile key={`${id}-${idx}`} prize={p} />;
           })}
           {strip.length === 0
-            ? Array.from({ length: 10 }).map((_, i) => (
+            ? Array.from({ length: 12 }).map((_, i) => (
                 <div
                   key={`ph-${i}`}
-                  className="shrink-0 rounded bg-white/5 border border-white/10"
-                  style={{ width: ITEM_WIDTH, height: ITEM_HEIGHT }}
+                  className="shrink-0 rounded-sm"
+                  style={{
+                    width: ITEM_WIDTH,
+                    height: ITEM_HEIGHT,
+                    background: "rgba(58, 36, 16, 0.08)",
+                    border: "1px dashed rgba(58, 36, 16, 0.3)",
+                  }}
                 />
               ))
             : null}
         </motion.div>
       </div>
 
-      <div className="flex items-center justify-between gap-3">
-        <div className="text-xs opacity-70">
-          Доступно спинов: <span className="font-semibold">{spins}</span>
+      <div className="flex items-center justify-between gap-2 shrink-0">
+        <div
+          style={{
+            fontFamily: "var(--font-script), cursive",
+            fontSize: "clamp(12px, 1.3vw, 20px)",
+            color: "#2a1608",
+          }}
+        >
+          Осталось спинов: <span style={{ fontWeight: 700 }}>{spins}</span>
         </div>
         <button
           onClick={spin}
           disabled={buttonDisabled}
-          className="px-4 py-2 rounded bg-yellow-500 text-black font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          className="rounded-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:brightness-105"
+          style={{
+            background: "linear-gradient(#5a3418, #3e2712)",
+            color: "#f5e6c8",
+            fontFamily: "var(--font-script), cursive",
+            fontSize: "clamp(13px, 1.4vw, 22px)",
+            padding: "0.35em 1.2em",
+            border: "1px solid #2a1608",
+            letterSpacing: "0.02em",
+          }}
         >
           {stage === "spinning"
             ? "Крутится..."
             : spins <= 0
             ? "Нет спинов"
-            : "Крутить рулетку (−1 спин)"}
+            : "Крутить рулетку"}
         </button>
       </div>
 
-      {error ? <p className="text-xs text-red-400">Ошибка: {error}</p> : null}
+      {error ? (
+        <p style={{ fontSize: "0.75em", color: "#8b1e1e" }}>Ошибка: {error}</p>
+      ) : null}
 
       {stage === "revealed" && winner ? (
         <RevealOverlay prize={winner} onDismiss={dismiss} />
@@ -151,12 +181,13 @@ function PrizeTile({ prize }: { prize: Prize }) {
   const color = RARITY_COLOR[prize.rarity];
   return (
     <div
-      className="shrink-0 rounded overflow-hidden relative"
+      className="shrink-0 rounded-sm overflow-hidden relative"
       style={{
         width: ITEM_WIDTH,
         height: ITEM_HEIGHT,
-        borderBottom: `4px solid ${color}`,
-        background: "rgba(255,255,255,0.05)",
+        borderBottom: `3px solid ${color}`,
+        background: "rgba(58, 36, 16, 0.12)",
+        boxShadow: "inset 0 0 0 1px rgba(58, 36, 16, 0.3)",
       }}
     >
       {prize.image ? (
@@ -167,7 +198,14 @@ function PrizeTile({ prize }: { prize: Prize }) {
           className="w-full h-full object-cover"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center text-xs opacity-70">
+        <div
+          className="w-full h-full flex items-center justify-center text-center px-1"
+          style={{
+            fontSize: "11px",
+            color: "#3a2410",
+            fontWeight: 500,
+          }}
+        >
           {prize.name}
         </div>
       )}
@@ -187,24 +225,30 @@ function RevealOverlay({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ background: "rgba(11, 8, 5, 0.82)", backdropFilter: "blur(6px)" }}
       onClick={onDismiss}
     >
       <motion.div
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 250, damping: 18 }}
-        className="relative bg-neutral-900 rounded-lg p-6 min-w-[280px] text-center"
-        style={{ boxShadow: `0 0 40px ${color}` }}
+        transition={{ type: "spring", stiffness: 240, damping: 18 }}
+        className="relative rounded p-6 min-w-[300px] text-center"
+        style={{
+          background: "linear-gradient(#f4e1b8, #e4c98a)",
+          boxShadow: `0 0 60px ${color}, inset 0 0 0 2px #3e2712`,
+          color: "#1b120a",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="mx-auto mb-4 rounded overflow-hidden"
+          className="mx-auto mb-4 rounded-sm overflow-hidden"
           style={{
-            width: 200,
-            height: 150,
-            background: "rgba(255,255,255,0.05)",
+            width: 220,
+            height: 165,
+            background: "rgba(58, 36, 16, 0.1)",
             borderBottom: `6px solid ${color}`,
+            boxShadow: "inset 0 0 0 1px rgba(58, 36, 16, 0.4)",
           }}
         >
           {prize.image ? (
@@ -220,13 +264,38 @@ function RevealOverlay({
             </div>
           )}
         </div>
-        <div className="text-xs uppercase opacity-60 mb-1" style={{ color }}>
+        <div
+          className="uppercase mb-1"
+          style={{
+            color,
+            fontSize: "0.75em",
+            letterSpacing: "0.15em",
+            fontWeight: 700,
+          }}
+        >
           {prize.rarity}
         </div>
-        <div className="text-lg font-semibold mb-4">{prize.name}</div>
+        <div
+          className="mb-4"
+          style={{
+            fontFamily: "var(--font-script), cursive",
+            fontSize: "28px",
+            lineHeight: 1.1,
+          }}
+        >
+          {prize.name}
+        </div>
         <button
           onClick={onDismiss}
-          className="px-4 py-2 rounded bg-white text-black text-sm font-semibold"
+          className="rounded-sm hover:brightness-105"
+          style={{
+            background: "linear-gradient(#5a3418, #3e2712)",
+            color: "#f5e6c8",
+            fontFamily: "var(--font-script), cursive",
+            fontSize: "18px",
+            padding: "0.35em 1.5em",
+            border: "1px solid #2a1608",
+          }}
         >
           Продолжить
         </button>

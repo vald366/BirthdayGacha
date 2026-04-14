@@ -40,37 +40,45 @@ export function QuestLog({ state, onAfterClaim }: Props) {
   }
 
   return (
-    <div className="w-full">
-      <header className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold">Журнал заданий</h2>
-        <span className="text-xs opacity-70">
-          Доступно спинов: <span className="font-semibold">{state.spins}</span>
+    <div className="w-full text-[#1b120a]">
+      <header className="flex items-baseline justify-between mb-2">
+        <h2
+          style={{
+            fontFamily: "var(--font-script), cursive",
+            fontSize: "clamp(14px, 1.8vw, 26px)",
+            lineHeight: 1,
+            color: "#2a1608",
+          }}
+        >
+          Журнал заданий
+        </h2>
+        <span
+          style={{
+            fontSize: "clamp(10px, 1vw, 14px)",
+            fontWeight: 600,
+            color: "#4a2a10",
+          }}
+        >
+          Спинов: {state.spins}
         </span>
       </header>
 
-      <ul className="space-y-2">
+      <ul className="space-y-1.5">
         {state.quests.map((q) => (
           <li
             key={q.id}
-            className="flex items-center gap-3 p-3 rounded border border-white/15 bg-white/5"
+            className="flex items-center gap-2 py-1"
+            style={{
+              borderBottom: "1px dashed rgba(74, 42, 16, 0.25)",
+              fontSize: "clamp(11px, 1.1vw, 15px)",
+            }}
           >
-            <div className="w-16 aspect-[4/3] bg-white/10 rounded shrink-0 overflow-hidden">
-              {q.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={q.image}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              ) : null}
-            </div>
             <div className="flex-1 min-w-0">
-              <div className="font-medium truncate">{q.title}</div>
-              {q.description ? (
-                <div className="text-xs opacity-70 truncate">{q.description}</div>
-              ) : null}
-              <div className="text-xs opacity-60 mt-1">
-                Награда: +{q.reward} Спин · {STATUS_LABEL[q.status]}
+              <div className="font-semibold truncate" style={{ letterSpacing: "0.01em" }}>
+                {q.title}
+              </div>
+              <div style={{ fontSize: "0.8em", opacity: 0.7 }}>
+                +{q.reward} спин · {STATUS_LABEL[q.status]}
               </div>
             </div>
             <div className="shrink-0">
@@ -78,21 +86,33 @@ export function QuestLog({ state, onAfterClaim }: Props) {
                 <button
                   onClick={() => claim(q.id)}
                   disabled={claimingId === q.id}
-                  className="px-3 py-1.5 text-sm rounded bg-white text-black font-semibold disabled:opacity-50"
+                  className="rounded disabled:opacity-50 transition-colors hover:brightness-95"
+                  style={{
+                    background: "#3e2712",
+                    color: "#f5e6c8",
+                    fontFamily: "var(--font-script), cursive",
+                    padding: "0.25em 0.8em",
+                    fontSize: "0.9em",
+                    border: "1px solid #2a1608",
+                  }}
                 >
-                  {claimingId === q.id ? "..." : "Получить спин"}
+                  {claimingId === q.id ? "..." : "Забрать"}
                 </button>
               ) : q.status === "claimed" ? (
-                <span className="text-xs opacity-50">✓</span>
+                <span style={{ color: "#2a6a2a", fontSize: "1.1em" }}>✓</span>
               ) : (
-                <span className="text-xs opacity-30">—</span>
+                <span style={{ opacity: 0.35 }}>✦</span>
               )}
             </div>
           </li>
         ))}
       </ul>
 
-      {error ? <p className="mt-2 text-xs text-red-400">Ошибка: {error}</p> : null}
+      {error ? (
+        <p className="mt-1" style={{ fontSize: "0.8em", color: "#8b1e1e" }}>
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
