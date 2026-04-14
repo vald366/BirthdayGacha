@@ -5,16 +5,7 @@ const STATE_KEY = process.env.STATE_KEY ?? "gacha:state";
 
 let client: Redis | null = null;
 function redis(): Redis {
-  if (!client) {
-    const url = process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-    if (!url || !token) {
-      throw new Error(
-        "Missing UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN env vars"
-      );
-    }
-    client = new Redis({ url, token });
-  }
+  if (!client) client = Redis.fromEnv();
   return client;
 }
 
