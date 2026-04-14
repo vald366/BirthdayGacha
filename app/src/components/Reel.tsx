@@ -85,7 +85,6 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
   function dismiss() {
     setStage("idle");
     setWinner(null);
-    setStrip([]);
   }
 
   const buttonDisabled = stage !== "idle" || spins <= 0;
