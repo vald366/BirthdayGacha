@@ -134,15 +134,19 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
         </motion.div>
       </div>
 
-      <div className="flex items-center justify-between gap-2 shrink-0">
+      <div className="relative flex items-center justify-center shrink-0" style={{ paddingLeft: "4%", paddingRight: "4%" }}>
         <div
+          className="absolute"
           style={{
+            left: "15%",
+            top: "50%",
+            transform: "translateY(-50%)",
             fontFamily: "var(--font-script), cursive",
-            fontSize: "clamp(12px, 1.3vw, 20px)",
+            fontSize: "clamp(11px, 1.25vw, 19px)",
             color: "#2a1608",
           }}
         >
-          Осталось спинов: <span style={{ fontWeight: 700 }}>{spins}</span>
+          Осталось круток: <span style={{ fontWeight: 700 }}>{spins}</span>
         </div>
         <button
           onClick={spin}
@@ -152,8 +156,8 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
             background: "linear-gradient(#5a3418, #3e2712)",
             color: "#f5e6c8",
             fontFamily: "var(--font-script), cursive",
-            fontSize: "clamp(13px, 1.4vw, 22px)",
-            padding: "0.35em 1.2em",
+            fontSize: "clamp(11px, 1.2vw, 18px)",
+            padding: "0.3em 1em",
             border: "1px solid #2a1608",
             letterSpacing: "0.02em",
           }}
@@ -161,8 +165,8 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
           {stage === "spinning"
             ? "Крутится..."
             : spins <= 0
-            ? "Нет спинов"
-            : "Крутить рулетку"}
+            ? "Нет круток"
+            : "Крутить!"}
         </button>
       </div>
 

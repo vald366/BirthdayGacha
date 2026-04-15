@@ -16,15 +16,21 @@ export type Prize = {
   image?: string;
   rarity: Rarity;
   weight: number;
+  unique?: boolean;
+  finalOnly?: boolean;
+  guaranteedByPull?: number;
 };
 
 export type GameState = {
   friendName: string;
   spins: number;
+  pullCount: number;
   prizes: Prize[];
   quests: Quest[];
   inventory: string[];
 };
+
+export const REGULAR_PULLS = 9;
 
 export const RARITY_COLOR: Record<Rarity, string> = {
   common: "#9ca3af",
@@ -36,18 +42,27 @@ export const RARITY_COLOR: Record<Rarity, string> = {
 
 export const DEFAULT_STATE: GameState = {
   friendName: "[ИМЯ]",
-  spins: 0,
+  spins: 1,
+  pullCount: 0,
   prizes: [
-    { id: "p1", name: "Приз 1", rarity: "common", weight: 50 },
-    { id: "p2", name: "Приз 2", rarity: "rare", weight: 25 },
-    { id: "p3", name: "Приз 3", rarity: "epic", weight: 15 },
-    { id: "p4", name: "Приз 4", rarity: "legendary", weight: 8 },
-    { id: "p5", name: "Приз 5", rarity: "mythic", weight: 2 },
+    { id: "gift1", name: "Подарок 1", image: "/gift1.png", rarity: "common", weight: 20 },
+    { id: "gift2", name: "Подарок 2", image: "/gift2.png", rarity: "rare", weight: 15, unique: true, guaranteedByPull: 8 },
+    { id: "gift3", name: "Подарок 3", image: "/gift3.png", rarity: "epic", weight: 5 },
+    { id: "gift4", name: "Подарок 4", image: "/gift4.png", rarity: "common", weight: 40 },
+    { id: "gift5", name: "Подарок 5", image: "/gift5.png", rarity: "rare", weight: 15 },
+    { id: "gift6", name: "Подарок 6", image: "/gift6.jpg", rarity: "legendary", weight: 5, unique: true, guaranteedByPull: 9 },
+    { id: "gift7", name: "???", image: "/gift7.jfif", rarity: "mythic", weight: 1, unique: true, finalOnly: true },
   ],
   quests: [
-    { id: "q1", title: "Задание 1", reward: 1, status: "locked" },
-    { id: "q2", title: "Задание 2", reward: 1, status: "locked" },
-    { id: "q3", title: "Задание 3", reward: 1, status: "locked" },
+    { id: "q1", title: "За красивые глаза", reward: 1, status: "active" },
+    { id: "q2", title: "Убить Мауштера любой ценой", reward: 1, status: "active" },
+    { id: "q3", title: "SPECIAL ASSIGNMENT WAITING, TALK TO GERALT OF RIVIA", reward: 1, status: "active" },
+    { id: "q4", title: "Помурчать (если не болеешь)", reward: 1, status: "active" },
+    { id: "q5", title: "Пленить раба Яну и хлыстнуть плетью", reward: 1, status: "active" },
+    { id: "q6", title: "Найти гимуар в Верминтайде (и Разбить его НАХУЙ)", reward: 1, status: "active" },
+    { id: "q7", title: "Нарисовать котика в пейнте", reward: 1, status: "active" },
+    { id: "q8", title: "Задание 8", reward: 1, status: "active" },
+    { id: "q9", title: "Face Reveal (Видеозвонок)", reward: 1, status: "locked" },
   ],
   inventory: [],
 };

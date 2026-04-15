@@ -26,6 +26,14 @@ export async function POST(req: Request) {
       quest.status = "claimed";
       s.spins += quest.reward;
       outcome = "claimed";
+
+      const hidden = s.quests.find((q) => q.id === "q9");
+      if (hidden && hidden.status === "locked") {
+        const allOthersDone = s.quests
+          .filter((q) => q.id !== "q9")
+          .every((q) => q.status === "claimed");
+        if (allOthersDone) hidden.status = "active";
+      }
       return s;
     });
 

@@ -1,6 +1,6 @@
 import { mutateState } from "@/lib/storage";
 import { buildStrip, pickWeighted, WINNER_INDEX } from "@/lib/spin";
-import type { Prize } from "@/lib/state";
+import { REGULAR_PULLS, type Prize } from "@/lib/state";
 
 export const dynamic = "force-dynamic";
 
@@ -11,13 +11,43 @@ export async function POST() {
 
     const state = await mutateState((s) => {
       if (s.spins <= 0) throw new Error("no-spins");
-      if (s.prizes.length === 0) throw new Error("empty-pool");
 
-      const winner = pickWeighted(s.prizes);
+      const pullNumber = s.pullCount + 1;
+      const inventorySet = new Set(s.inventory);
+      let winner: Prize;
+
+      if (pullNumber > REGULAR_PULLS) {
+        const finalPool = s.prizes.filter(
+          (p) => p.finalOnly && !inventorySet.has(p.id)
+        );
+        if (finalPool.length === 0) throw new Error("empty-pool");
+        winner = finalPool[0];
+      } else {
+        const regularPool = s.prizes.filter(
+          (p) => !p.finalOnly && !(p.unique && inventorySet.has(p.id))
+        );
+        if (regularPool.length === 0) throw new Error("empty-pool");
+
+        const duePity = s.prizes.find(
+          (p) =>
+            p.guaranteedByPull !== undefined &&
+            !p.finalOnly &&
+            !inventorySet.has(p.id) &&
+            pullNumber >= p.guaranteedByPull
+        );
+
+        if (duePity) {
+          winner = duePity;
+        } else {
+          winner = pickWeighted(regularPool);
+        }
+      }
+
       chosen = winner;
       strip = buildStrip(s.prizes, winner);
 
       s.spins -= 1;
+      s.pullCount = pullNumber;
       s.inventory.push(winner.id);
       return s;
     });

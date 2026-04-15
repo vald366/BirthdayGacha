@@ -1,17 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { GameState, Quest } from "@/lib/state";
+import type { GameState } from "@/lib/state";
 
 type Props = {
   state: GameState;
   onAfterClaim?: () => void;
-};
-
-const STATUS_LABEL: Record<Quest["status"], string> = {
-  locked: "Заблокировано",
-  active: "Активный",
-  claimed: "Завершено",
 };
 
 export function QuestLog({ state, onAfterClaim }: Props) {
@@ -45,7 +39,7 @@ export function QuestLog({ state, onAfterClaim }: Props) {
         <h2
           style={{
             fontFamily: "var(--font-script), cursive",
-            fontSize: "clamp(14px, 1.8vw, 26px)",
+            fontSize: "clamp(26px, 3.6vw, 56px)",
             lineHeight: 1,
             color: "#2a1608",
           }}
@@ -54,32 +48,32 @@ export function QuestLog({ state, onAfterClaim }: Props) {
         </h2>
         <span
           style={{
-            fontSize: "clamp(10px, 1vw, 14px)",
+            fontSize: "clamp(16px, 1.8vw, 28px)",
             fontWeight: 600,
             color: "#4a2a10",
+            whiteSpace: "nowrap",
           }}
         >
-          Спинов: {state.spins}
+          Круток: {state.spins}
         </span>
       </header>
 
-      <ul className="space-y-1.5 flex-1 overflow-y-auto pr-1 quest-scroll">
+      <ul className="flex-1 overflow-y-auto pr-1 quest-scroll flex flex-col">
         {state.quests.map((q) => (
           <li
             key={q.id}
-            className="flex items-center gap-2 py-1"
+            className="flex items-center gap-2 flex-1 min-h-0"
             style={{
               borderBottom: "1px dashed rgba(74, 42, 16, 0.25)",
-              fontSize: "clamp(11px, 1.1vw, 15px)",
+              fontSize: "clamp(18px, 2vw, 32px)",
+              padding: "0.6em 0",
             }}
           >
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold truncate" style={{ letterSpacing: "0.01em" }}>
-                {q.title}
-              </div>
-              <div style={{ fontSize: "0.8em", opacity: 0.7 }}>
-                +{q.reward} спин · {STATUS_LABEL[q.status]}
-              </div>
+            <div
+              className="flex-1 min-w-0"
+              style={{ fontSize: "0.8em", lineHeight: 1.25 }}
+            >
+              {q.status === "locked" ? "???" : q.description ?? q.title}
             </div>
             <div className="shrink-0">
               {q.status === "active" ? (
@@ -91,17 +85,17 @@ export function QuestLog({ state, onAfterClaim }: Props) {
                     background: "#3e2712",
                     color: "#f5e6c8",
                     fontFamily: "var(--font-script), cursive",
-                    padding: "0.25em 0.8em",
-                    fontSize: "0.9em",
+                    padding: "0.15em 0.55em",
+                    fontSize: "0.6em",
                     border: "1px solid #2a1608",
                   }}
                 >
                   {claimingId === q.id ? "..." : "Забрать"}
                 </button>
               ) : q.status === "claimed" ? (
-                <span style={{ color: "#2a6a2a", fontSize: "1.1em" }}>✓</span>
+                <span style={{ color: "#2a6a2a", fontSize: "0.9em" }}>✓</span>
               ) : (
-                <span style={{ opacity: 0.35 }}>✦</span>
+                <span style={{ opacity: 0.35, fontSize: "0.8em" }}>✦</span>
               )}
             </div>
           </li>
