@@ -38,7 +38,7 @@ export function Inventory({ prizes, inventory }: Props) {
           пусто...
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="grid grid-cols-2 gap-1">
           {prizes.map((p) => {
             const count = counts.get(p.id) ?? 0;
             if (count === 0) return null;

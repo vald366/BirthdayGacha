@@ -4,9 +4,9 @@ import { useMemo, useRef, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { RARITY_COLOR, type Prize } from "@/lib/state";
 
-const ITEM_WIDTH = 110;
-const ITEM_HEIGHT = 82;
-const GAP = 6;
+const ITEM_WIDTH = 140;
+const ITEM_HEIGHT = 105;
+const GAP = 8;
 const SPIN_DURATION = 6;
 
 type Props = {
@@ -92,7 +92,7 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
     <div className="w-full h-full flex flex-col gap-1.5">
       <div
         ref={viewportRef}
-        className="relative w-full flex-1 overflow-hidden rounded-sm"
+        className="relative w-full flex-1 overflow-hidden rounded-sm flex items-center"
         style={{
           minHeight: ITEM_HEIGHT + 12,
           background: "rgba(58, 36, 16, 0.08)",
@@ -109,7 +109,7 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
         />
         <motion.div
           animate={controls}
-          className="absolute top-1.5 left-0 flex"
+          className="flex items-center"
           style={{ gap: `${GAP}px`, willChange: "transform" }}
         >
           {strip.map((id, idx) => {
