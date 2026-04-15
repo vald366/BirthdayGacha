@@ -8,6 +8,7 @@ export type Quest = {
   image?: string;
   reward: number;
   status: QuestStatus;
+  hidden?: boolean;
 };
 
 export type Prize = {
@@ -54,15 +55,15 @@ export const DEFAULT_STATE: GameState = {
     { id: "gift7", name: "???", image: "/gift7.jfif", rarity: "mythic", weight: 1, unique: true, finalOnly: true },
   ],
   quests: [
-    { id: "q1", title: "За красивые глаза", reward: 1, status: "active" },
-    { id: "q2", title: "Убить Мауштера любой ценой", reward: 1, status: "active" },
-    { id: "q3", title: "SPECIAL ASSIGNMENT WAITING, TALK TO GERALT OF RIVIA", reward: 1, status: "active" },
-    { id: "q4", title: "Помурчать (если не болеешь)", reward: 1, status: "active" },
-    { id: "q5", title: "Пленить раба Яну и хлыстнуть плетью", reward: 1, status: "active" },
-    { id: "q6", title: "Найти гимуар в Верминтайде (и Разбить его НАХУЙ)", reward: 1, status: "active" },
-    { id: "q7", title: "Нарисовать котика в пейнте", reward: 1, status: "active" },
-    { id: "q8", title: "Подстричь куст", reward: 1, status: "active" },
-    { id: "q9", title: "Face Reveal (Видеозвонок)", reward: 1, status: "locked" },
+    { id: "q1", title: "За красивые глаза", reward: 1, status: "locked" },
+    { id: "q2", title: "Убить Мауштера любой ценой", reward: 1, status: "locked" },
+    { id: "q3", title: "SPECIAL ASSIGNMENT WAITING, TALK TO GERALT OF RIVIA", reward: 1, status: "locked" },
+    { id: "q4", title: "Помурчать (если не болеешь)", reward: 1, status: "locked" },
+    { id: "q5", title: "Пленить раба Яну и хлыстнуть плетью", reward: 1, status: "locked" },
+    { id: "q6", title: "Найти гимуар в Верминтайде (и Разбить его НАХУЙ)", reward: 1, status: "locked" },
+    { id: "q7", title: "Нарисовать котика в пейнте", reward: 1, status: "locked" },
+    { id: "q8", title: "Подстричь куст", reward: 1, status: "locked" },
+    { id: "q9", title: "Face Reveal (Видеозвонок)", reward: 1, status: "locked", hidden: true },
   ],
   inventory: [],
 };

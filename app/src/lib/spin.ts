@@ -17,12 +17,21 @@ export function pickWeighted(prizes: Prize[]): Prize {
 
 export function buildStrip(prizes: Prize[], winner: Prize): string[] {
   const strip: string[] = [];
+  let lastId: string | null = null;
   for (let i = 0; i < STRIP_LENGTH; i++) {
     if (i === WINNER_INDEX) {
       strip.push(winner.id);
-    } else {
-      strip.push(pickWeighted(prizes).id);
+      lastId = winner.id;
+      continue;
     }
+    let pick = pickWeighted(prizes);
+    if (prizes.length > 1 && pick.id === lastId) {
+      for (let attempt = 0; attempt < 6 && pick.id === lastId; attempt++) {
+        pick = pickWeighted(prizes);
+      }
+    }
+    strip.push(pick.id);
+    lastId = pick.id;
   }
   return strip;
 }

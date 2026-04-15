@@ -81,7 +81,9 @@ export function QuestLog({ state, onAfterClaim }: Props) {
                 wordBreak: "break-word",
               }}
             >
-              {q.status === "locked" ? "???" : q.description ?? q.title}
+              {q.hidden && q.status !== "claimed"
+                ? "???"
+                : q.description ?? q.title}
             </div>
             <div className="shrink-0">
               {q.status === "active" ? (

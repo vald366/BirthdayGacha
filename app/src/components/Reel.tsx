@@ -1,11 +1,10 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { RARITY_COLOR, type Prize } from "@/lib/state";
 
-const ITEM_WIDTH = 140;
-const ITEM_HEIGHT = 105;
+const ITEM_ASPECT = 140 / 105;
 const GAP = 8;
 const SPIN_DURATION = 6;
 
@@ -24,13 +23,47 @@ type SpinResponse = {
   error?: string;
 };
 
+function buildIdleStrip(prizes: Prize[], length = 24): string[] {
+  if (prizes.length === 0) return [];
+  const pool = [...prizes];
+  const out: string[] = [];
+  let lastId: string | null = null;
+  for (let i = 0; i < length; i++) {
+    const candidates = pool.filter((p) => p.id !== lastId);
+    const pick = (candidates.length > 0 ? candidates : pool)[
+      Math.floor(Math.random() * (candidates.length > 0 ? candidates.length : pool.length))
+    ];
+    out.push(pick.id);
+    lastId = pick.id;
+  }
+  return out;
+}
+
 export function Reel({ prizes, spins, onAfterSpin }: Props) {
   const [stage, setStage] = useState<Stage>("idle");
-  const [strip, setStrip] = useState<string[]>([]);
+  const idleStrip = useMemo(() => buildIdleStrip(prizes), [prizes]);
+  const [strip, setStrip] = useState<string[]>(idleStrip);
   const [winner, setWinner] = useState<Prize | null>(null);
   const [error, setError] = useState<string | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const controls = useAnimationControls();
+
+  const [tile, setTile] = useState({ w: 140, h: 105 });
+
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    function measure() {
+      const h = (el as HTMLDivElement).clientHeight;
+      if (h > 0) {
+        setTile({ h, w: Math.round(h * ITEM_ASPECT) });
+      }
+    }
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const prizeById = useMemo(() => {
     const map = new Map<string, Prize>();
@@ -38,7 +71,7 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
     return map;
   }, [prizes]);
 
-  const pitch = ITEM_WIDTH + GAP;
+  const pitch = tile.w + GAP;
 
   async function spin() {
     if (stage !== "idle") return;
@@ -61,8 +94,8 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
       await new Promise((r) => requestAnimationFrame(() => r(null)));
 
       const viewport = viewportRef.current?.clientWidth ?? 0;
-      const winnerCenter = data.winnerIndex * pitch + ITEM_WIDTH / 2;
-      const jitter = (Math.random() - 0.5) * (ITEM_WIDTH - 20);
+      const winnerCenter = data.winnerIndex * pitch + tile.w / 2;
+      const jitter = (Math.random() - 0.5) * (tile.w - 20);
       const offset = winnerCenter - viewport / 2 + jitter;
 
       await controls.start({
@@ -92,9 +125,8 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
     <div className="w-full h-full flex flex-col gap-1.5">
       <div
         ref={viewportRef}
-        className="relative w-full flex-1 overflow-hidden rounded-sm flex items-center"
+        className="relative w-full flex-1 min-h-0 overflow-hidden rounded-sm flex items-center"
         style={{
-          minHeight: ITEM_HEIGHT + 12,
           background: "rgba(58, 36, 16, 0.08)",
           boxShadow: "inset 0 0 0 1px rgba(58, 36, 16, 0.3)",
         }}
@@ -115,22 +147,8 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
           {strip.map((id, idx) => {
             const p = prizeById.get(id);
             if (!p) return null;
-            return <PrizeTile key={`${id}-${idx}`} prize={p} />;
+            return <PrizeTile key={`${id}-${idx}`} prize={p} width={tile.w} height={tile.h} />;
           })}
-          {strip.length === 0
-            ? Array.from({ length: 12 }).map((_, i) => (
-                <div
-                  key={`ph-${i}`}
-                  className="shrink-0 rounded-sm"
-                  style={{
-                    width: ITEM_WIDTH,
-                    height: ITEM_HEIGHT,
-                    background: "rgba(58, 36, 16, 0.08)",
-                    border: "1px dashed rgba(58, 36, 16, 0.3)",
-                  }}
-                />
-              ))
-            : null}
         </motion.div>
       </div>
 
@@ -181,14 +199,14 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
   );
 }
 
-function PrizeTile({ prize }: { prize: Prize }) {
+function PrizeTile({ prize, width, height }: { prize: Prize; width: number; height: number }) {
   const color = RARITY_COLOR[prize.rarity];
   return (
     <div
       className="shrink-0 rounded-sm overflow-hidden relative"
       style={{
-        width: ITEM_WIDTH,
-        height: ITEM_HEIGHT,
+        width,
+        height,
         borderBottom: `3px solid ${color}`,
         background: "rgba(58, 36, 16, 0.12)",
         boxShadow: "inset 0 0 0 1px rgba(58, 36, 16, 0.3)",
