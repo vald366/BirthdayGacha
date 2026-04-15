@@ -15,23 +15,47 @@ export function pickWeighted(prizes: Prize[]): Prize {
   return prizes[prizes.length - 1];
 }
 
-export function buildStrip(prizes: Prize[], winner: Prize): string[] {
-  const strip: string[] = [];
-  let lastId: string | null = null;
-  for (let i = 0; i < STRIP_LENGTH; i++) {
-    if (i === WINNER_INDEX) {
-      strip.push(winner.id);
-      lastId = winner.id;
-      continue;
-    }
-    let pick = pickWeighted(prizes);
-    if (prizes.length > 1 && pick.id === lastId) {
-      for (let attempt = 0; attempt < 6 && pick.id === lastId; attempt++) {
-        pick = pickWeighted(prizes);
-      }
-    }
-    strip.push(pick.id);
-    lastId = pick.id;
+function shuffle<T>(arr: T[]): T[] {
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
   }
+  return out;
+}
+
+export function buildShuffledSequence(ids: string[], length: number): string[] {
+  if (ids.length === 0) return [];
+  const out: string[] = [];
+  while (out.length < length) {
+    let chunk = shuffle(ids);
+    if (ids.length > 1 && out.length > 0 && chunk[0] === out[out.length - 1]) {
+      const swapIdx = 1 + Math.floor(Math.random() * (chunk.length - 1));
+      [chunk[0], chunk[swapIdx]] = [chunk[swapIdx], chunk[0]];
+    }
+    for (const id of chunk) {
+      out.push(id);
+      if (out.length >= length) break;
+    }
+  }
+  return out;
+}
+
+export function buildStrip(prizes: Prize[], winner: Prize): string[] {
+  const regularIds = prizes.filter((p) => !p.finalOnly).map((p) => p.id);
+  const poolIds = regularIds.length > 0 ? regularIds : prizes.map((p) => p.id);
+  const strip = buildShuffledSequence(poolIds, STRIP_LENGTH);
+  strip[WINNER_INDEX] = winner.id;
+
+  if (poolIds.length > 1) {
+    for (const n of [WINNER_INDEX - 1, WINNER_INDEX + 1]) {
+      if (n < 0 || n >= strip.length) continue;
+      if (strip[n] !== winner.id) continue;
+      const outer = n < WINNER_INDEX ? strip[n - 1] : strip[n + 1];
+      const replacement = poolIds.find((id) => id !== winner.id && id !== outer);
+      if (replacement) strip[n] = replacement;
+    }
+  }
+
   return strip;
 }

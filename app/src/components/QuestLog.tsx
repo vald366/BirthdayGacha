@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useLayoutEffect, useRef } from "react";
 import type { GameState } from "@/lib/state";
 
 type Props = {
@@ -66,25 +66,16 @@ export function QuestLog({ state, onAfterClaim }: Props) {
             style={{
               borderBottom: "1px dashed rgba(74, 42, 16, 0.25)",
               fontSize: "clamp(18px, 2vw, 32px)",
-              padding: "0.6em 0",
+              padding: "0.8em 0",
             }}
           >
-            <div
-              className="flex-1 min-w-0"
-              style={{
-                fontSize: "0.72em",
-                lineHeight: 1.2,
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                wordBreak: "break-word",
-              }}
-            >
-              {q.hidden && q.status !== "claimed"
-                ? "???"
-                : q.description ?? q.title}
-            </div>
+            <QuestText
+              text={
+                q.hidden && q.status !== "claimed"
+                  ? "???"
+                  : q.description ?? q.title
+              }
+            />
             <div className="shrink-0">
               {q.status === "active" ? (
                 <button
@@ -117,6 +108,63 @@ export function QuestLog({ state, onAfterClaim }: Props) {
           {error}
         </p>
       ) : null}
+    </div>
+  );
+}
+
+function QuestText({ text }: { text: string }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    const inner = innerRef.current;
+    if (!box || !inner) return;
+
+    function fit() {
+      if (!box || !inner) return;
+      inner.style.fontSize = "0.72em";
+      const boxH = box.clientHeight;
+      const boxW = box.clientWidth;
+      let lo = 0.35;
+      let hi = 0.72;
+      for (let i = 0; i < 10; i++) {
+        const mid = (lo + hi) / 2;
+        inner.style.fontSize = `${mid}em`;
+        if (inner.scrollHeight <= boxH && inner.scrollWidth <= boxW) {
+          lo = mid;
+        } else {
+          hi = mid;
+        }
+      }
+      inner.style.fontSize = `${lo}em`;
+      setScale(lo);
+    }
+
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(box);
+    return () => ro.disconnect();
+  }, [text]);
+
+  return (
+    <div
+      ref={boxRef}
+      className="flex-1 min-w-0 h-full flex items-center"
+      style={{ overflow: "hidden" }}
+    >
+      <div
+        ref={innerRef}
+        style={{
+          fontSize: `${scale}em`,
+          lineHeight: 1.2,
+          wordBreak: "break-word",
+          width: "100%",
+        }}
+      >
+        {text}
+      </div>
     </div>
   );
 }

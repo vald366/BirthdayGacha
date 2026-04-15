@@ -72,6 +72,7 @@ export default function HomePage() {
             <Reel
               prizes={state.prizes}
               spins={state.spins}
+              inventory={state.inventory}
               onAfterSpin={refresh}
             />
           ) : null}

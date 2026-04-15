@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { RARITY_COLOR, type Prize } from "@/lib/state";
+import { buildShuffledSequence } from "@/lib/spin";
 
 const ITEM_ASPECT = 140 / 105;
 const GAP = 8;
@@ -11,6 +12,7 @@ const SPIN_DURATION = 6;
 type Props = {
   prizes: Prize[];
   spins: number;
+  inventory: string[];
   onAfterSpin?: () => void;
 };
 
@@ -24,22 +26,12 @@ type SpinResponse = {
 };
 
 function buildIdleStrip(prizes: Prize[], length = 24): string[] {
-  if (prizes.length === 0) return [];
-  const pool = [...prizes];
-  const out: string[] = [];
-  let lastId: string | null = null;
-  for (let i = 0; i < length; i++) {
-    const candidates = pool.filter((p) => p.id !== lastId);
-    const pick = (candidates.length > 0 ? candidates : pool)[
-      Math.floor(Math.random() * (candidates.length > 0 ? candidates.length : pool.length))
-    ];
-    out.push(pick.id);
-    lastId = pick.id;
-  }
-  return out;
+  const regularIds = prizes.filter((p) => !p.finalOnly).map((p) => p.id);
+  const poolIds = regularIds.length > 0 ? regularIds : prizes.map((p) => p.id);
+  return buildShuffledSequence(poolIds, length);
 }
 
-export function Reel({ prizes, spins, onAfterSpin }: Props) {
+export function Reel({ prizes, spins, inventory, onAfterSpin }: Props) {
   const [stage, setStage] = useState<Stage>("idle");
   const idleStrip = useMemo(() => buildIdleStrip(prizes), [prizes]);
   const [strip, setStrip] = useState<string[]>(idleStrip);
@@ -147,7 +139,16 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
           {strip.map((id, idx) => {
             const p = prizeById.get(id);
             if (!p) return null;
-            return <PrizeTile key={`${id}-${idx}`} prize={p} width={tile.w} height={tile.h} />;
+            const masked = !!p.finalOnly && !inventory.includes(p.id);
+            return (
+              <PrizeTile
+                key={`${id}-${idx}`}
+                prize={p}
+                width={tile.w}
+                height={tile.h}
+                masked={masked}
+              />
+            );
           })}
         </motion.div>
       </div>
@@ -199,7 +200,17 @@ export function Reel({ prizes, spins, onAfterSpin }: Props) {
   );
 }
 
-function PrizeTile({ prize, width, height }: { prize: Prize; width: number; height: number }) {
+function PrizeTile({
+  prize,
+  width,
+  height,
+  masked,
+}: {
+  prize: Prize;
+  width: number;
+  height: number;
+  masked?: boolean;
+}) {
   const color = RARITY_COLOR[prize.rarity];
   return (
     <div
@@ -212,7 +223,19 @@ function PrizeTile({ prize, width, height }: { prize: Prize; width: number; heig
         boxShadow: "inset 0 0 0 1px rgba(58, 36, 16, 0.3)",
       }}
     >
-      {prize.image ? (
+      {masked ? (
+        <div
+          className="w-full h-full flex items-center justify-center"
+          style={{
+            fontFamily: "var(--font-script), cursive",
+            fontSize: `${Math.round(height * 0.6)}px`,
+            color: "#3a2410",
+            fontWeight: 700,
+          }}
+        >
+          ?
+        </div>
+      ) : prize.image ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={prize.image}
