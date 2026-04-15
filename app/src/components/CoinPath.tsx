@@ -44,7 +44,7 @@ export function CoinPath() {
       {COINS.map((c, i) => (
         <img
           key={i}
-          src="/coin.jfif"
+          src="/coin.png"
           alt=""
           className="absolute pointer-events-none"
           style={{
@@ -52,7 +52,6 @@ export function CoinPath() {
             top: `${c.y}%`,
             width: `${COIN_SIZE_PCT}%`,
             transform: "translate(-50%, -50%)",
-            mixBlendMode: "multiply",
           }}
         />
       ))}
