@@ -6,6 +6,7 @@ import { QuestLog } from "@/components/QuestLog";
 import { Reel } from "@/components/Reel";
 import { Inventory } from "@/components/Inventory";
 import { CoinPath } from "@/components/CoinPath";
+import { CoinPlacer } from "@/components/CoinPlacer";
 
 type PanelView = "reel" | "inventory";
 
@@ -20,13 +21,15 @@ export default function HomePage() {
         style={{ backgroundImage: "url(/bg.jfif)" }}
       >
         <CoinPath />
+        <CoinPlacer />
 
         <h1
-          className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap"
+          className="absolute left-[12%] right-[12%] text-center whitespace-nowrap"
           style={{
-            top: "3%",
+            top: "1.5%",
             fontFamily: "var(--font-script), cursive",
-            fontSize: "clamp(20px, 3.4vw, 64px)",
+            fontSize: "clamp(32px, 6.5vw, 120px)",
+            lineHeight: 1,
             color: "#2a1608",
             letterSpacing: "0.02em",
             textShadow: "0 1px 0 rgba(245, 230, 200, 0.4)",
