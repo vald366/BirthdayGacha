@@ -1,7 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { DEFAULT_STATE, type GameState } from "./state";
 
-const STATE_KEY = process.env.STATE_KEY ?? "gacha:state:v19";
+const STATE_KEY = process.env.STATE_KEY ?? "gacha:state:v20";
 
 function envUrl(): string | undefined {
   return process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;

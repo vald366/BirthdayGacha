@@ -49,9 +49,9 @@ export const DEFAULT_STATE: GameState = {
     { id: "gift1", name: "Подарок 1", image: "/gift1.png", rarity: "common", weight: 20 },
     { id: "gift2", name: "Подарок 2", image: "/gift2.png", rarity: "rare", weight: 15, unique: true, guaranteedByPull: 8 },
     { id: "gift3", name: "Подарок 3", image: "/gift3.png", rarity: "epic", weight: 5 },
-    { id: "gift4", name: "Подарок 4", image: "/gift4.png", rarity: "common", weight: 40 },
+    { id: "gift4", name: "Подарок 4", image: "/gift4.png", rarity: "common", weight: 35 },
     { id: "gift5", name: "Подарок 5", image: "/gift5.png", rarity: "rare", weight: 15 },
-    { id: "gift6", name: "Подарок 6", image: "/gift6.jpg", rarity: "legendary", weight: 5, unique: true, guaranteedByPull: 9 },
+    { id: "gift6", name: "Подарок 6", image: "/gift6.jpg", rarity: "legendary", weight: 10, unique: true, guaranteedByPull: 9 },
     { id: "gift7", name: "???", image: "/gift7.jfif", rarity: "mythic", weight: 1, unique: true, finalOnly: true },
   ],
   quests: [
