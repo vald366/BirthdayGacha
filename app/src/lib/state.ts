@@ -61,7 +61,7 @@ export const DEFAULT_STATE: GameState = {
     { id: "q5", title: "Пленить раба Яну и хлыстнуть плетью", reward: 1, status: "active" },
     { id: "q6", title: "Найти гимуар в Верминтайде (и Разбить его НАХУЙ)", reward: 1, status: "active" },
     { id: "q7", title: "Нарисовать котика в пейнте", reward: 1, status: "active" },
-    { id: "q8", title: "Задание 8", reward: 1, status: "active" },
+    { id: "q8", title: "Подстричь куст", reward: 1, status: "active" },
     { id: "q9", title: "Face Reveal (Видеозвонок)", reward: 1, status: "locked" },
   ],
   inventory: [],
