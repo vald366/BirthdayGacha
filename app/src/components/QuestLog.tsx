@@ -64,9 +64,9 @@ export function QuestLog({ state, onAfterClaim }: Props) {
             key={q.id}
             className="flex items-center gap-2 flex-1 min-h-0"
             style={{
-              borderBottom: "1px dashed rgba(74, 42, 16, 0.25)",
+              borderBottom: "2px solid rgba(74, 42, 16, 0.35)",
               fontSize: "clamp(18px, 2vw, 32px)",
-              padding: "0.8em 0",
+              padding: "0.35em 0",
             }}
           >
             <QuestText
@@ -112,6 +112,19 @@ export function QuestLog({ state, onAfterClaim }: Props) {
   );
 }
 
+function renderBold(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={i} style={{ fontWeight: 800 }}>
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+}
+
 function QuestText({ text }: { text: string }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -124,12 +137,11 @@ function QuestText({ text }: { text: string }) {
 
     function fit() {
       if (!box || !inner) return;
-      inner.style.fontSize = "0.72em";
       const boxH = box.clientHeight;
       const boxW = box.clientWidth;
-      let lo = 0.35;
-      let hi = 0.72;
-      for (let i = 0; i < 10; i++) {
+      let lo = 0.4;
+      let hi = 1.4;
+      for (let i = 0; i < 12; i++) {
         const mid = (lo + hi) / 2;
         inner.style.fontSize = `${mid}em`;
         if (inner.scrollHeight <= boxH && inner.scrollWidth <= boxW) {
@@ -163,7 +175,7 @@ function QuestText({ text }: { text: string }) {
           width: "100%",
         }}
       >
-        {text}
+        {renderBold(text)}
       </div>
     </div>
   );

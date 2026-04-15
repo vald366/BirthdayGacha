@@ -20,6 +20,43 @@ export default function HomePage() {
           }
         />
 
+        {/* Photo pinned to top-right */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: "4%",
+            right: "3%",
+            width: "14%",
+            aspectRatio: "610 / 410",
+            transform: "rotate(6deg)",
+            transformOrigin: "center",
+          }}
+        >
+          <img
+            src="/Border.png"
+            alt=""
+            className="absolute inset-0 w-full h-full"
+            style={{ objectFit: "fill" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              padding: "11.5%",
+            }}
+          >
+            <div
+              className="w-full h-full overflow-hidden"
+              style={{ borderRadius: "6%" }}
+            >
+              <img
+                src="/photo1.png"
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+
         <h1
           className="absolute left-[18%] right-[18%] text-center whitespace-nowrap"
           style={{
