@@ -71,7 +71,15 @@ export function QuestLog({ state, onAfterClaim }: Props) {
           >
             <div
               className="flex-1 min-w-0"
-              style={{ fontSize: "0.8em", lineHeight: 1.25 }}
+              style={{
+                fontSize: "0.72em",
+                lineHeight: 1.2,
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                wordBreak: "break-word",
+              }}
             >
               {q.status === "locked" ? "???" : q.description ?? q.title}
             </div>

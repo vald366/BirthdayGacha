@@ -75,28 +75,31 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen p-6 max-w-3xl mx-auto space-y-6 font-mono">
-      <h1 className="text-xl font-bold">Admin</h1>
+    <main
+      className="min-h-screen p-8 max-w-4xl mx-auto space-y-8 font-mono"
+      style={{ color: "#f5e6c8" }}
+    >
+      <h1 className="text-3xl font-bold">Admin</h1>
 
-      <section className="space-y-2">
-        <label className="block text-sm opacity-70">Admin password</label>
+      <section className="space-y-3">
+        <label className="block text-base font-semibold">Admin password</label>
         <div className="flex gap-2">
           <input
             type="password"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
-            className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded text-sm"
+            className="flex-1 px-4 py-3 bg-white/15 border border-white/40 rounded text-base"
           />
           <button
             onClick={savePw}
-            className="px-3 py-2 text-sm rounded bg-white text-black font-semibold"
+            className="px-4 py-3 text-base rounded bg-white text-black font-semibold"
           >
             Save
           </button>
           {saved ? (
             <button
               onClick={clearPw}
-              className="px-3 py-2 text-sm rounded border border-white/20"
+              className="px-4 py-3 text-base rounded border border-white/40"
             >
               Clear
             </button>
@@ -104,35 +107,35 @@ export default function AdminPage() {
         </div>
       </section>
 
-      {error ? <p className="text-xs text-red-400">State error: {error}</p> : null}
-      {opError ? <p className="text-xs text-red-400">Op error: {opError}</p> : null}
+      {error ? <p className="text-sm text-red-400">State error: {error}</p> : null}
+      {opError ? <p className="text-sm text-red-400">Op error: {opError}</p> : null}
 
       {state ? (
         <>
-          <section className="space-y-2">
-            <h2 className="font-semibold">Quests</h2>
-            <ul className="space-y-2">
+          <section className="space-y-3">
+            <h2 className="text-xl font-bold">Quests</h2>
+            <ul className="space-y-3">
               {state.quests.map((q) => (
                 <li
                   key={q.id}
-                  className="flex items-center gap-3 p-2 border border-white/15 rounded"
+                  className="flex items-center gap-4 p-4 border border-white/30 rounded bg-white/5"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{q.title}</div>
-                    <div className="text-xs opacity-60">
-                      {q.id} · status: {q.status}
+                    <div className="text-base font-semibold">{q.title}</div>
+                    <div className="text-sm opacity-80 mt-1">
+                      {q.id} · status: <span className="font-semibold">{q.status}</span>
                     </div>
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-2">
                     {(["locked", "active", "claimed"] as QuestStatus[]).map((s) => (
                       <button
                         key={s}
                         onClick={() => setQuestStatus(q.id, s)}
                         disabled={busyId === q.id || q.status === s}
-                        className={`px-2 py-1 text-xs rounded border ${
+                        className={`px-3 py-2 text-sm rounded border font-semibold ${
                           q.status === s
                             ? "bg-white text-black border-white"
-                            : "border-white/30"
+                            : "border-white/50 hover:bg-white/10"
                         } disabled:opacity-40`}
                       >
                         {s}
@@ -147,21 +150,21 @@ export default function AdminPage() {
           <section>
             <button
               onClick={reset}
-              className="px-3 py-2 text-sm rounded border border-red-400 text-red-400"
+              className="px-4 py-3 text-base font-semibold rounded border-2 border-red-400 text-red-400 hover:bg-red-400/10"
             >
               Reset state
             </button>
           </section>
 
-          <section>
-            <h2 className="font-semibold text-sm opacity-70">Raw</h2>
-            <pre className="text-xs p-2 bg-black/40 rounded overflow-auto">
+          <section className="space-y-2">
+            <h2 className="text-lg font-bold">Raw state</h2>
+            <pre className="text-sm p-4 bg-black/60 border border-white/20 rounded overflow-auto">
               {JSON.stringify(state, null, 2)}
             </pre>
           </section>
         </>
       ) : (
-        <p className="text-sm opacity-60">Loading...</p>
+        <p className="text-base">Loading...</p>
       )}
     </main>
   );
